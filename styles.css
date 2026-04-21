@@ -1,0 +1,361 @@
+/* ========================================
+   ROOT
+======================================== */
+:root {
+    --black:       #060608;
+    --white:       #f5f1ea;
+    --g1: rgba(255,255,255,0.06);   /* main glass fill */
+    --g2: rgba(255,255,255,0.03);   /* pane fill */
+    --gb: rgba(255,255,255,0.13);   /* border bright */
+    --gd: rgba(255,255,255,0.06);   /* border dim */
+    --t1: #f5f1ea;
+    --t2: rgba(245,241,234,0.55);
+    --t3: rgba(245,241,234,0.28);
+    --blur-card: 60px;
+    --blur-pane: 30px;
+    --blur-btn:  18px;
+    --r-card: 28px;
+    --r-btn:  14px;
+    --ease: cubic-bezier(0.25,0.46,0.45,0.94);
+    --spring: cubic-bezier(0.34,1.56,0.64,1);
+}
+
+/* ========================================
+   RESET
+======================================== */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{
+    font-family:'Raleway',sans-serif;
+    background:var(--black);
+    color:var(--t1);
+    overflow:hidden;         /* dragon fills viewport */
+    min-height:100vh;
+}
+a{text-decoration:none;color:inherit;}
+
+/* ========================================
+   BACKGROUND CANVAS (dragon lives here)
+======================================== */
+#bg-canvas{
+    position:fixed;inset:0;
+    width:100%;height:100%;
+    z-index:0;
+    pointer-events:none;
+}
+
+/* ========================================
+   GRID + VIGNETTE
+======================================== */
+.bg-grid{
+    position:fixed;inset:0;z-index:1;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
+    background-size:80px 80px;
+}
+.bg-vignette{
+    position:fixed;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse at center, transparent 40%, rgba(0,0,0,0.75) 100%);
+}
+
+/* ========================================
+   SCENE
+======================================== */
+.scene{
+    position:relative;z-index:10;
+    min-height:100vh;
+    display:flex;align-items:center;justify-content:center;
+    padding:2rem;
+}
+
+/* ========================================
+   CARD  — the main glass panel
+======================================== */
+.card{
+    position:relative;
+    width:100%;max-width:940px;
+    background:var(--g1);
+    border:1px solid var(--gb);
+    border-radius:var(--r-card);
+    /* KEY: heavy blur = true see-through frosted glass */
+    backdrop-filter:blur(var(--blur-card)) saturate(1.2);
+    -webkit-backdrop-filter:blur(var(--blur-card)) saturate(1.2);
+    box-shadow:
+        inset 0 1.5px 0 rgba(255,255,255,0.15),
+        inset 0 -1px 0 rgba(0,0,0,0.4),
+        inset 1px 0 0 rgba(255,255,255,0.07),
+        0 40px 100px rgba(0,0,0,0.6),
+        0 0 0 0.5px rgba(255,255,255,0.04);
+    overflow:hidden;
+    animation:rise 1s var(--spring) both;
+}
+@keyframes rise{
+    from{opacity:0;transform:translateY(40px) scale(0.96);}
+    to  {opacity:1;transform:translateY(0)   scale(1);}
+}
+
+/* extra frosted texture layer */
+.card-frost{
+    position:absolute;inset:0;pointer-events:none;
+    background:linear-gradient(135deg,
+        rgba(255,255,255,0.06) 0%,
+        rgba(255,255,255,0.01) 50%,
+        rgba(255,255,255,0.04) 100%);
+}
+/* top-edge gloss line */
+.card-gloss{
+    position:absolute;top:0;left:8%;right:8%;height:1px;pointer-events:none;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.3),transparent);
+}
+
+/* ========================================
+   INNER ROW
+======================================== */
+.card-inner{
+    display:flex;
+    flex-direction:row;
+    min-height:430px;
+}
+
+/* ========================================
+   PANE  (left & right glass sub-panels)
+======================================== */
+.pane{
+    position:relative;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    padding:3.5rem 2.5rem;
+    gap:1.8rem;
+    overflow:hidden;
+}
+.pane-left { flex:0 0 360px; }
+.pane-right{ flex:1; align-items:flex-start; }
+
+/* extra frosted layer inside each pane */
+.pane-glass{
+    position:absolute;inset:0;pointer-events:none;
+    background:var(--g2);
+    backdrop-filter:blur(var(--blur-pane));
+    -webkit-backdrop-filter:blur(var(--blur-pane));
+}
+
+/* ========================================
+   AVATAR
+======================================== */
+.avatar-zone{
+    position:relative;
+    display:flex;align-items:center;justify-content:center;
+    animation:levitate 5s ease-in-out infinite;
+}
+@keyframes levitate{
+    0%,100%{transform:translateY(0);}
+    50%     {transform:translateY(-10px);}
+}
+
+.avatar-halo{
+    position:absolute;inset:-14px;border-radius:50%;
+    border:0.5px solid rgba(255,255,255,0.07);
+    animation:halo-spin 12s linear infinite;
+    background:conic-gradient(
+        rgba(255,255,255,0) 0deg,
+        rgba(255,255,255,0.08) 90deg,
+        rgba(255,255,255,0) 180deg,
+        rgba(255,255,255,0.04) 270deg,
+        rgba(255,255,255,0) 360deg
+    );
+}
+@keyframes halo-spin{to{transform:rotate(360deg);}}
+
+.avatar-ring{
+    width:110px;height:110px;border-radius:50%;
+    border:1px solid var(--gb);
+    background:rgba(255,255,255,0.05);
+    backdrop-filter:blur(40px);
+    -webkit-backdrop-filter:blur(40px);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:
+        inset 0 1px 2px rgba(255,255,255,0.2),
+        inset 0 -1px 2px rgba(0,0,0,0.3),
+        0 0 50px rgba(255,255,255,0.04);
+    position:relative;z-index:1;
+}
+.avatar-core{
+    width:95px;height:95px;border-radius:50%;
+    background:linear-gradient(135deg,rgba(255,255,255,0.12),rgba(255,255,255,0.04));
+    border:1px solid rgba(255,255,255,0.12);
+    display:flex;align-items:center;justify-content:center;
+}
+.avatar-core span{
+    font-family:'Cinzel',serif;
+    font-size:2rem;font-weight:400;
+    color:rgba(245,241,234,0.85);
+    letter-spacing:0.06em;
+}
+
+/* ========================================
+   IDENTITY
+======================================== */
+.ident{text-align:center;}
+h1{
+    font-family:'Cinzel',serif;
+    font-size:2.1rem;line-height:1.1;
+    margin-bottom:.75rem;
+}
+.n1{display:block;font-weight:300;color:var(--t1);}
+.n2{display:block;font-weight:600;font-style:normal;color:var(--t1);letter-spacing:.06em;}
+
+.bio{
+    font-size:.88rem;line-height:1.85;font-weight:300;
+    color:var(--t2);max-width:230px;margin:0 auto;
+    letter-spacing:.02em;
+}
+
+/* ========================================
+   CHIPS
+======================================== */
+.chips{display:flex;gap:.5rem;flex-wrap:wrap;justify-content:center;}
+.chip{
+    font-size:.6rem;letter-spacing:.25em;text-transform:uppercase;
+    padding:.3rem .8rem;
+    border:0.5px solid var(--gd);
+    border-radius:100px;color:var(--t3);
+    background:rgba(255,255,255,0.03);
+    backdrop-filter:blur(10px);
+}
+
+/* ========================================
+   SEPARATOR
+======================================== */
+.sep{
+    flex:0 0 1px;
+    display:flex;flex-direction:column;
+    align-items:center;justify-content:center;
+    position:relative;
+}
+.sep-line{
+    width:1px;height:65%;
+    background:linear-gradient(180deg,transparent,rgba(255,255,255,0.18),transparent);
+}
+.sep-gem{
+    position:absolute;top:50%;transform:translateY(-50%);
+    width:6px;height:6px;border-radius:50%;
+    background:rgba(255,255,255,0.25);
+    box-shadow:0 0 12px rgba(255,255,255,0.2);
+}
+
+/* ========================================
+   SECTION EYEBROW
+======================================== */
+.section-eyebrow{
+    font-size:.62rem;letter-spacing:.42em;text-transform:uppercase;
+    color:var(--t3);font-weight:400;
+    margin-bottom:-.5rem;
+}
+
+/* ========================================
+   LINKS
+======================================== */
+.links{
+    display:flex;flex-direction:column;gap:.7rem;
+    width:100%;
+}
+
+.link-row{
+    position:relative;
+    display:flex;align-items:center;gap:1rem;
+    padding:.95rem 1.2rem;
+    border-radius:var(--r-btn);
+    border:1px solid var(--gd);
+    /* see-through glass button */
+    background:rgba(255,255,255,0.035);
+    backdrop-filter:blur(var(--blur-btn));
+    -webkit-backdrop-filter:blur(var(--blur-btn));
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.08),
+        0 4px 20px rgba(0,0,0,0.28);
+    transition:
+        background .25s var(--ease),
+        border-color .25s var(--ease),
+        transform .3s var(--spring),
+        box-shadow .25s var(--ease);
+    overflow:hidden;
+}
+/* frosted top sheen */
+.link-row::before{
+    content:'';position:absolute;
+    top:0;left:0;right:0;height:1px;
+    background:linear-gradient(90deg,transparent,rgba(255,255,255,0.12),transparent);
+    pointer-events:none;
+}
+/* hover gloss sweep */
+.link-row::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(120deg,rgba(255,255,255,0.07) 0%,transparent 55%);
+    opacity:0;transition:opacity .3s ease;pointer-events:none;
+}
+.link-row:hover{
+    background:rgba(255,255,255,0.07);
+    border-color:rgba(255,255,255,0.16);
+    transform:translateY(-2px) translateX(4px);
+    box-shadow:
+        inset 0 1px 0 rgba(255,255,255,0.12),
+        0 12px 35px rgba(0,0,0,0.4),
+        0 0 0 1px rgba(255,255,255,0.07);
+}
+.link-row:hover::after{opacity:1;}
+.link-row:active{transform:translateY(0) translateX(2px) scale(.99);}
+
+.link-gem{
+    width:40px;height:40px;border-radius:11px;
+    background:rgba(255,255,255,0.07);
+    border:0.5px solid rgba(255,255,255,0.1);
+    display:flex;align-items:center;justify-content:center;
+    flex-shrink:0;color:rgba(245,241,234,0.7);
+    transition:background .25s,color .25s;
+}
+.link-gem svg{width:18px;height:18px;}
+.link-row:hover .link-gem{background:rgba(255,255,255,0.14);color:var(--t1);}
+
+.link-text{flex:1;display:flex;flex-direction:column;}
+.lname  {font-size:.92rem;font-weight:400;letter-spacing:.01em;color:var(--t1);}
+.lhandle{font-size:.72rem;color:var(--t3);letter-spacing:.04em;margin-top:.1rem;}
+
+.link-arr{
+    font-size:.95rem;color:var(--t3);
+    transition:color .25s,transform .3s var(--spring);
+}
+.link-row:hover .link-arr{color:var(--t2);transform:translate(3px,-3px);}
+
+/* ========================================
+   FOOTER
+======================================== */
+.foot{
+    font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;
+    color:rgba(245,241,234,0.15);margin-top:.25rem;
+}
+
+/* ========================================
+   RESPONSIVE
+======================================== */
+@media(max-width:740px){
+    body{overflow-y:auto;}
+    .card-inner{flex-direction:column;}
+    .pane-left{flex:unset;padding:3rem 2rem 2rem;}
+    .pane-right{padding:2rem 2rem 3rem;align-items:center;}
+    .links{width:100%;}
+    .section-eyebrow{align-self:flex-start;}
+    .sep{
+        flex-direction:row;flex:0 0 1px;height:1px;width:100%;
+    }
+    .sep-line{
+        width:65%;height:1px;
+        background:linear-gradient(90deg,transparent,rgba(255,255,255,0.18),transparent);
+    }
+    .sep-gem{top:50%;left:50%;transform:translate(-50%,-50%);}
+}
+@media(max-width:420px){
+    .pane-left,.pane-right{padding:2.5rem 1.5rem;}
+    h1{font-size:1.75rem;}
+}
