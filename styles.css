@@ -214,11 +214,13 @@ a{text-decoration:none;color:inherit;}
 .ident{text-align:center;}
 h1{
     font-family:'Cinzel',serif;
-    font-size:2.1rem;line-height:1.1;
+    font-size:1.75rem;line-height:1.1;
     margin-bottom:.75rem;
+    white-space:nowrap;
+    font-weight:300;
+    color:var(--t1);
 }
-.n1{display:block;font-weight:300;color:var(--t1);}
-.n2{display:block;font-weight:600;font-style:normal;color:var(--t1);letter-spacing:.06em;}
+.n2{font-weight:600;color:var(--t1);letter-spacing:.06em;}
 
 .bio{
     font-size:.88rem;line-height:1.85;font-weight:300;
